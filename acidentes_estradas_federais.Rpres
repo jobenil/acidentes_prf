@@ -1,0 +1,360 @@
+Acidentes em Estradas Federais em Goiás 
+========================================================
+author: Jobenil Luiz Magalhães Júnior e Ivan Arantes
+date: 14/10/2018
+autosize: false
+
+
+
+Objetivo Geral
+========================================================
+- Conhecer as principais características dos acidentes de trânsito ocorridos entre 2007 e 2018 nas principais estradas federais que cortam o estado de Goiás
+
+# Objetivos específicos:
+
+- Conhecer as principais características do banco de dados disponibilizado.
+- Identificar as principais causas de acidentes de trânsito nas estradas federais em Goiás.
+- Determinar quais fatores contribuem para o aumento/redução de acidentes de trânsito nas estradas federais em Goiás.
+
+Descrição dos dados
+========================================================
+autosize: false
+
+## Dados de acidentes nas estradas federais brasileiras.
+<https://www.prf.gov.br/portal/dados-abertos>
+
+## Contém dados desde 2007. 
+
+# 1.698.215
+## Acidentes no Brasil entre 2007 e Abril/2018.
+# 75.868
+## Acidentes em Goiás
+
+
+Acidentes no Brasil - 2007 a 2018
+========================================================
+
+```{r, echo= FALSE}
+prf_2007 <- read.csv2('datatran2007.csv', header = TRUE, sep = ';', dec = '.')
+prf_2007$latitude <- 'NA'
+prf_2007$longitude <- 'NA'
+prf_2007$regional <- 'NA'
+prf_2007$delegacia <- 'NA'
+prf_2007$uop <- 'NA'
+
+prf_2008 <- read.csv2('datatran2008.csv', header = TRUE, sep = ';', dec = '.')
+prf_2008$latitude <- 'NA'
+prf_2008$longitude <- 'NA'
+prf_2008$regional <- 'NA'
+prf_2008$delegacia <- 'NA'
+prf_2008$uop <- 'NA'
+
+prf_2009 <- read.csv2('datatran2009.csv', header = TRUE, sep = ';', dec = '.')
+prf_2009$latitude <- 'NA'
+prf_2009$longitude <- 'NA'
+prf_2009$regional <- 'NA'
+prf_2009$delegacia <- 'NA'
+prf_2009$uop <- 'NA'
+
+prf_2010 <- read.csv2('datatran2010.csv', header = TRUE, sep = ';', dec = '.')
+prf_2010$latitude <- 'NA'
+prf_2010$longitude <- 'NA'
+prf_2010$regional <- 'NA'
+prf_2010$delegacia <- 'NA'
+prf_2010$uop <- 'NA'
+
+prf_2011 <- read.csv2('datatran2011.csv', header = TRUE, sep = ';', dec = '.')
+prf_2011$latitude <- 'NA'
+prf_2011$longitude <- 'NA'
+prf_2011$regional <- 'NA'
+prf_2011$delegacia <- 'NA'
+prf_2011$uop <- 'NA'
+
+prf_2012 <- read.csv2('datatran2012.csv', header = TRUE, sep = ';', dec = '.')
+prf_2012$latitude <- 'NA'
+prf_2012$longitude <- 'NA'
+prf_2012$regional <- 'NA'
+prf_2012$delegacia <- 'NA'
+prf_2012$uop <- 'NA'
+
+prf_2013 <- read.csv2('datatran2013.csv', header = TRUE, sep = ';', dec = '.')
+prf_2013$latitude <- 'NA'
+prf_2013$longitude <- 'NA'
+prf_2013$regional <- 'NA'
+prf_2013$delegacia <- 'NA'
+prf_2013$uop <- 'NA'
+
+prf_2014 <- read.csv2('datatran2014.csv', header = TRUE, sep = ';', dec = '.')
+prf_2014$latitude <- 'NA'
+prf_2014$longitude <- 'NA'
+prf_2014$regional <- 'NA'
+prf_2014$delegacia <- 'NA'
+prf_2014$uop <- 'NA'
+
+prf_2015 <- read.csv2('datatran2015.csv', header = TRUE, sep = ';', dec = '.')
+prf_2015$latitude <- 'NA'
+prf_2015$longitude <- 'NA'
+prf_2015$regional <- 'NA'
+prf_2015$delegacia <- 'NA'
+prf_2015$uop <- 'NA'
+
+prf_2016 <- read.csv2('datatran2016_atual.csv', header = TRUE, sep = ';', dec = ',')
+prf_2016$latitude <- 'NA'
+prf_2016$longitude <- 'NA'
+prf_2016$regional <- 'NA'
+prf_2016$delegacia <- 'NA'
+prf_2016$uop <- 'NA'
+
+prf_2017 <- read.csv2('datatran2017.csv', header = TRUE, sep = ';', dec = ',')
+prf_2018 <- read.csv2('datatran2018.csv', header = TRUE, sep = ';', dec = ',')
+
+prf_acidentes <- rbind(prf_2018, prf_2017, prf_2016, prf_2015, prf_2014, prf_2013, prf_2012, prf_2011, prf_2010, prf_2009, prf_2008, prf_2007)
+
+rm(prf_2018, prf_2017, prf_2016, prf_2015, prf_2014, prf_2013, prf_2012, prf_2011, prf_2010, prf_2009, prf_2008, prf_2007)
+
+#Pacotes a serem utilizados
+library(plyr)
+library(descr, quietly = TRUE)
+library(pander)
+library(ggplot2)
+prf_acidentes_go <- subset(prf_acidentes, prf_acidentes$uf == "GO" & (prf_acidentes$br == '153' | prf_acidentes$br == '20' | prf_acidentes$br == '364' | prf_acidentes$br == '40' | prf_acidentes$br == '50' | prf_acidentes$br == '60' | prf_acidentes$br == '70' ))
+
+```
+![Acidentes no Brasil por UF](acidentes_brasil.png)
+
+
+Acidentes em Goiás por dias da semana entre 2007 e 2018
+========================================================
+
+```{r, echo=FALSE}
+prf_acidentes_go$dia_semana <- revalue(prf_acidentes_go$dia_semana, c("domingo" = "Domingo", "quarta-feira" = "Quarta", "quinta-feira" = "Quinta", "sábado" = "Sábado", "segunda-feira" = "Segunda", "terça-feira" = "Terça", "sexta-feira" = "Sexta"))
+
+prf_acidentes_go$dia_semana = factor(prf_acidentes_go$dia_semana,levels(prf_acidentes_go$dia_semana)[c(1, 5, 7, 2, 3, 6, 4)])
+
+tabela = table(prf_acidentes_go$dia_semana, prf_acidentes_go$ano)
+
+library(RColorBrewer)
+coul = brewer.pal(7, "Pastel2") 
+ 
+#Transform this data in %
+data_percentage=apply(tabela, 2, function(x){x*100/sum(x,na.rm=T)})
+ 
+# Make a stacked barplot--> it will be in %!
+barplot(data_percentage, col=coul , border="white", xlab="ano", legend=rownames(data_percentage))
+```
+***
+<span class="emphasized">Mais de 40% dos acidentes ocorrem entre Sexta e Domingo</span>
+
+Acidentes por hora do dia
+========================================================
+
+
+```{r, echo= FALSE}
+prf_acidentes_go$horas <- substr(prf_acidentes_go$horario, start = 1, stop = 2)
+tabela = table(prf_acidentes_go$horas)
+barplot(tabela, col = 'lightblue', xlab = 'Hora do dia')
+```
+
+***
+<span class="emphasized">Ocorrem mais acidentes entre 15 e 20 horas do que nas demais horas do dia.</span>
+
+Tipos de Acidentes
+=======================================================
+left: 70%
+![](tipos_acidentes_go.png)
+<span class="emphasized">Será um indício de falta de atenção dos motoristas?</span>
+
+***
+<span class="emphasized">Saída de pista e as Colisões são os tipos de acidentes mais comuns.</span>
+
+Causas de Acidentes
+======================================================
+left: 80%
+![](causas_acidentes_go.png)
+
+***
+<span class="emphasized">Falta de atenção é a principal causa de acidentes apontada.</span>
+
+Classificação do Acidente
+======================================================
+left: 80%
+
+```{r, echo = FALSE}
+prf_acidentes_go$classificacao_acidente_go[prf_acidentes_go$classificacao_acidente == ""] <- "Ignorado"
+prf_acidentes_go$classificacao_acidente_go[prf_acidentes_go$classificacao_acidente == "(null)"] <- "Ignorado"
+tabela <- table(prf_acidentes_go$classificacao_acidente)
+tabela <- tabela[c(1:3,5)]
+barplot(tabela, col = 'red', xlab = 'Classificação do Acidente')
+```
+***
+<span class="emphasized">Práticamente metade dos acidentes têm vítima.</span>
+
+Condições Metereológicas
+======================================================
+left: 80%
+![](condicoes_meter_go.png)
+***
+<span class="emphasized">Céu Claro! Enfatiza falta de atenção do Motorista?.</span>
+
+Estradas de Goiás
+======================================================
+left: 100%
+autosize: true
+![](mapa-goias.jpg)
+
+
+Tipo de pista em Goiás - BR 153
+======================================================
+autosize: false
+left: 75%
+
+```{r, echo = FALSE}
+prf_acidentes_go$tipo_pista <- revalue(prf_acidentes_go$tipo_pista, c("Dupla               " = "Dupla", "Múltipla            " = "Múltipla", "Simples             " = "Simples"))
+tabela <- table(prf_acidentes_go$tipo_pista, prf_acidentes_go$ano)
+tabela <- tabela[1:3,]
+tabela <- xtabs(~ br + tipo_pista + ano, prf_acidentes_go)
+library(ggplot2)
+tabela <- as.data.frame(tabela)
+tabela <- tabela[tabela$tipo_pista != '(null)',]
+p <- ggplot(tabela[tabela$br == '153' & tabela$ano != '2018',], aes(x=ano, y=Freq, group=tipo_pista)) +
+    geom_line(aes(colour = tipo_pista)) + ggtitle("Acidentes na BR 153 entre 2007 e 2017 por tipo de pista") + xlab("Ano") + ylab("Número de Acidentes") + theme_minimal()
+p+scale_color_manual(values=c("#FF0000", "#00008B", "#00FF00"))
+
+```
+***
+<span class="emphasized">Na BR 153 os acidentes vêm diminuindo com o tempo quando para pista dupla e múltipla.</span>
+
+Tipo de pista em Goiás - BR 020
+======================================================
+autosize: false
+left: 75%
+
+```{r, echo = FALSE}
+prf_acidentes_go$tipo_pista <- revalue(prf_acidentes_go$tipo_pista, c("Dupla               " = "Dupla", "Múltipla            " = "Múltipla", "Simples             " = "Simples"))
+tabela <- table(prf_acidentes_go$tipo_pista, prf_acidentes_go$ano)
+tabela <- tabela[1:3,]
+tabela <- xtabs(~ br + tipo_pista + ano, prf_acidentes_go)
+library(ggplot2)
+tabela <- as.data.frame(tabela)
+tabela <- tabela[tabela$tipo_pista != '(null)',]
+p <- ggplot(tabela[tabela$br == '20' & tabela$ano != '2018',], aes(x=ano, y=Freq, group=tipo_pista)) +
+    geom_line(aes(colour = tipo_pista)) + ggtitle("Acidentes na BR 020 entre 2007 e 2017 por tipo de pista") + xlab("Ano") + ylab("Número de Acidentes") + theme_minimal()
+p+scale_color_manual(values=c("#FF0000", "#00008B", "#00FF00"))
+
+```
+***
+<span class="emphasized">Na BR 020 predomina os acidentes em pista simples que diminuiram com o tempo.</span>
+
+Tipo de pista em Goiás - BR 364
+======================================================
+autosize: false
+left: 75%
+
+```{r, echo = FALSE}
+prf_acidentes_go$tipo_pista <- revalue(prf_acidentes_go$tipo_pista, c("Dupla               " = "Dupla", "Múltipla            " = "Múltipla", "Simples             " = "Simples"))
+tabela <- table(prf_acidentes_go$tipo_pista, prf_acidentes_go$ano)
+tabela <- tabela[1:3,]
+tabela <- xtabs(~ br + tipo_pista + ano, prf_acidentes_go)
+library(ggplot2)
+tabela <- as.data.frame(tabela)
+tabela <- tabela[tabela$tipo_pista != '(null)',]
+p <- ggplot(tabela[tabela$br == '364' & tabela$ano != '2018',], aes(x=ano, y=Freq, group=tipo_pista)) +
+    geom_line(aes(colour = tipo_pista)) + ggtitle("Acidentes na BR 364 entre 2007 e 2017 por tipo de pista") + xlab("Ano") + ylab("Número de Acidentes") + theme_minimal()
+p+scale_color_manual(values=c("#FF0000", "#00008B", "#00FF00"))
+
+```
+***
+<span class="emphasized">Na BR 364 para qualquer tipo de pista os acidentes vêm diminuindo ao longo do tempo.</span>
+
+Tipo de pista em Goiás - BR 040
+======================================================
+autosize: false
+left: 75%
+
+```{r, echo = FALSE}
+prf_acidentes_go$tipo_pista <- revalue(prf_acidentes_go$tipo_pista, c("Dupla               " = "Dupla", "Múltipla            " = "Múltipla", "Simples             " = "Simples"))
+tabela <- table(prf_acidentes_go$tipo_pista, prf_acidentes_go$ano)
+tabela <- tabela[1:3,]
+tabela <- xtabs(~ br + tipo_pista + ano, prf_acidentes_go)
+library(ggplot2)
+tabela <- as.data.frame(tabela)
+tabela <- tabela[tabela$tipo_pista != '(null)',]
+p <- ggplot(tabela[tabela$br == '40' & tabela$ano != '2018',], aes(x=ano, y=Freq, group=tipo_pista)) +
+    geom_line(aes(colour = tipo_pista)) + ggtitle("Acidentes na BR 040 entre 2007 e 2017 por tipo de pista") + xlab("Ano") + ylab("Número de Acidentes") + theme_minimal()
+p+scale_color_manual(values=c("#FF0000", "#00008B", "#00FF00"))
+
+```
+***
+<span class="emphasized">Na BR 040 embora tenha ocorrido significativas diminuições de acidentes em pista dupla entre 2016 e 2017 houve um ligeiro aumento de acidentes em pista simples.</span>
+
+Tipo de pista em Goiás - BR 050
+======================================================
+autosize: false
+left: 75%
+
+```{r, echo = FALSE}
+prf_acidentes_go$tipo_pista <- revalue(prf_acidentes_go$tipo_pista, c("Dupla               " = "Dupla", "Múltipla            " = "Múltipla", "Simples             " = "Simples"))
+tabela <- table(prf_acidentes_go$tipo_pista, prf_acidentes_go$ano)
+tabela <- tabela[1:3,]
+tabela <- xtabs(~ br + tipo_pista + ano, prf_acidentes_go)
+library(ggplot2)
+tabela <- as.data.frame(tabela)
+tabela <- tabela[tabela$tipo_pista != '(null)',]
+p <- ggplot(tabela[tabela$br == '50' & tabela$ano != '2018',], aes(x=ano, y=Freq, group=tipo_pista)) +
+    geom_line(aes(colour = tipo_pista)) + ggtitle("Acidentes na BR 050 entre 2007 e 2017 por tipo de pista") + xlab("Ano") + ylab("Número de Acidentes") + theme_minimal()
+p+scale_color_manual(values=c("#FF0000", "#00008B", "#00FF00"))
+
+```
+***
+<span class="emphasized">Na BR 050 ocorreu uma diminuição acentuada entre 2015 e 2017 porém houve um grande crescimento de acidentes em pista dupla.</span>
+
+Tipo de pista em Goiás - BR 060
+======================================================
+autosize: false
+left: 75%
+
+```{r, echo = FALSE}
+prf_acidentes_go$tipo_pista <- revalue(prf_acidentes_go$tipo_pista, c("Dupla               " = "Dupla", "Múltipla            " = "Múltipla", "Simples             " = "Simples"))
+tabela <- table(prf_acidentes_go$tipo_pista, prf_acidentes_go$ano)
+tabela <- tabela[1:3,]
+tabela <- xtabs(~ br + tipo_pista + ano, prf_acidentes_go)
+library(ggplot2)
+tabela <- as.data.frame(tabela)
+tabela <- tabela[tabela$tipo_pista != '(null)',]
+p <- ggplot(tabela[tabela$br == '60' & tabela$ano != '2018',], aes(x=ano, y=Freq, group=tipo_pista)) +
+    geom_line(aes(colour = tipo_pista)) + ggtitle("Acidentes na BR 060 entre 2007 e 2017 por tipo de pista") + xlab("Ano") + ylab("Número de Acidentes") + theme_minimal()
+p+scale_color_manual(values=c("#FF0000", "#00008B", "#00FF00"))
+
+```
+***
+<span class="emphasized">Embora venha diminuindo o número de acidentes na BR 060, estes ainda são altos.</span>
+
+Tipo de pista em Goiás - BR 070
+======================================================
+autosize: false
+left: 75%
+
+```{r, echo = FALSE}
+prf_acidentes_go$tipo_pista <- revalue(prf_acidentes_go$tipo_pista, c("Dupla               " = "Dupla", "Múltipla            " = "Múltipla", "Simples             " = "Simples"))
+tabela <- table(prf_acidentes_go$tipo_pista, prf_acidentes_go$ano)
+tabela <- tabela[1:3,]
+tabela <- xtabs(~ br + tipo_pista + ano, prf_acidentes_go)
+library(ggplot2)
+tabela <- as.data.frame(tabela)
+tabela <- tabela[tabela$tipo_pista != '(null)',]
+p <- ggplot(tabela[tabela$br == '70' & tabela$ano != '2018',], aes(x=ano, y=Freq, group=tipo_pista)) +
+    geom_line(aes(colour = tipo_pista)) + ggtitle("Acidentes na BR 070 entre 2007 e 2017 por tipo de pista") + xlab("Ano") + ylab("Número de Acidentes") + theme_minimal()
+p+scale_color_manual(values=c("#FF0000", "#00008B", "#00FF00"))
+
+```
+***
+<span class="emphasized">Na BR 070 ocorreu uma inversão entre 2010 e 2011. Provávelmente pela conclusão da duplicação de trechos da estrada.</span>
+
+Conclusões:
+========================================================
+
+- As condições das estradas goiânas vêm melhorando nos últimos 11 anos.
+- O número de acidentes, em geral vêm diminuindo.
+- Não é possível afirmar que a diminuição se dá por causa do tipo de estrada.
+- Aparentemente a falta de atenção e imprudência dos motoristas parece ser uma forte causa dos acidentes.
+- Acreditamos que outros fatores como incremento na fiscalização e mudanças na legislação devem ter proporcionado a diminuição dos acidentes nas estradas.
